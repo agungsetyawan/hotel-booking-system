@@ -1,5 +1,7 @@
 const express = require('express');
 const { check, validationResult } = require('express-validator');
+const { createJWToken } = require('../libs/auth');
+const verifyJWT = require('../middleware');
 
 const router = express.Router();
 
@@ -40,6 +42,16 @@ router.post(
   }
 );
 
+router.get('/', verifyJWT, function(req, res, next) {
+  Admin.findAll()
+    .then(admin => {
+      res.status(201).send(admin);
+    })
+    .catch(err => {
+      res.status(400).send(err);
+    });
+});
+
 router.post(
   '/login',
   [
@@ -63,9 +75,12 @@ router.post(
       } else if (!admin.validPassword(req.body.password)) {
         res.status(200).json({ errors: 'wrong password' });
       } else {
-        res.send(admin.dataValues);
-        // req.session.admin = admin.dataValues;
-        // res.redirect('/dashboard');
+        res.status(200).json({
+          token: createJWToken({
+            sessionData: admin.dataValues,
+            maxAge: 3600 // 1 hour
+          })
+        });
       }
     });
   }
