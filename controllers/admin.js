@@ -30,26 +30,40 @@ module.exports = {
       res.status(422).json({ errors: errors.array() });
     }
 
-    Admin.findOne({ where: { username: req.body.username } }).then(function(admin) {
-      if (!admin) {
-        res.status(200).json({ errors: 'username not registered' });
-      } else if (!admin.validPassword(req.body.password)) {
-        res.status(200).json({ errors: 'wrong password' });
-      } else {
-        res.status(200).json({
-          token: createToken({
-            sessionData: admin.dataValues,
-            maxAge: 3600 // 1 hour
-          })
-        });
-      }
-    });
+    Admin.findOne({ where: { username: req.body.username } })
+      .then(admin => {
+        if (!admin) {
+          res.status(200).json({ errors: 'username not registered' });
+        } else if (!admin.validPassword(req.body.password)) {
+          res.status(200).json({ errors: 'wrong password' });
+        } else {
+          res.status(200).json({
+            token: createToken({
+              sessionData: admin.dataValues,
+              maxAge: 3600 // 1 hour
+            })
+          });
+        }
+      })
+      .catch(err => {
+        res.status(400).send(err);
+      });
   },
 
   getAll: (req, res) => {
     Admin.findAll()
       .then(admin => {
-        res.status(201).send(admin);
+        res.status(200).send(admin);
+      })
+      .catch(err => {
+        res.status(400).send(err);
+      });
+  },
+
+  delete: (req, res) => {
+    Admin.destroy({ where: { id: req.body.id } })
+      .then(admin => {
+        res.status(200).send(admin);
       })
       .catch(err => {
         res.status(400).send(err);

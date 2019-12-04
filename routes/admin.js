@@ -31,4 +31,6 @@ router.post(
 
 router.get('/', verifyJWT, controller.getAll);
 
+router.delete('/', verifyJWT, controller.delete);
+
 module.exports = router;
