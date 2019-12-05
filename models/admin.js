@@ -33,6 +33,10 @@ module.exports = (sequelize, DataTypes) => {
   );
   Admin.associate = function(models) {
     // associations can be defined here
+    Admin.hasMany(models.Room, {
+      foreignKey: 'adminId',
+      as: 'rooms'
+    });
   };
 
   Admin.prototype.validPassword = function(password) {
