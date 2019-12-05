@@ -99,5 +99,16 @@ module.exports = {
     } catch (error) {
       res.status(400).send(error);
     }
+  },
+
+  available: async (req, res) => {
+    try {
+      // const result = await Room.find({
+      //   attributes: { exclude: ['createdAt', 'updatedAt'] },
+      //   where: {}
+      // });
+    } catch (error) {
+      res.status(400).send(error);
+    }
   }
 };

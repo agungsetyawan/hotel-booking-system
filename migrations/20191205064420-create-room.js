@@ -30,14 +30,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER(10)
       },
-      createdAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
       adminId: {
         allowNull: false,
         type: Sequelize.INTEGER,
@@ -46,6 +38,14 @@ module.exports = {
           key: 'id',
           as: 'adminId'
         }
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },

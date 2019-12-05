@@ -22,13 +22,10 @@ module.exports = {
         type: Sequelize.ENUM,
         values: ['booking', 'cancel']
       },
-      createdAt: {
+      numberOfRoom: {
         allowNull: false,
-        type: Sequelize.DATE
-      },
-      updatedAt: {
-        allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.INTEGER(2),
+        defaultValue: 1
       },
       roomId: {
         allowNull: false,
@@ -47,6 +44,14 @@ module.exports = {
           key: 'id',
           as: 'customerId'
         }
+      },
+      createdAt: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updatedAt: {
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
   },
