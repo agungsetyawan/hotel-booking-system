@@ -6,6 +6,15 @@ module.exports = async (req, res, next) => {
     req.user = decodedToken.data;
     next();
   } catch (error) {
-    res.status(401).json({ message: 'Invalid auth token provided.' });
+    res.status(401).json({
+      errors: [
+        {
+          value: req.headers.authorization,
+          msg: 'Invalid auth token provided.',
+          param: 'authorization',
+          location: 'headers'
+        }
+      ]
+    });
   }
 };
