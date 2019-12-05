@@ -18,16 +18,16 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         get() {
           const image = this.getDataValue('image');
-          return `/img/room/${image}`;
+          return `/uploads/img/room/${image}`;
         }
       },
       quantity: {
         allowNull: false,
-        type: DataTypes.NUMBER(3)
+        type: DataTypes.INTEGER(3)
       },
       price: {
         allowNull: false,
-        type: DataTypes.NUMBER(7)
+        type: DataTypes.INTEGER(10)
       }
     },
     {}

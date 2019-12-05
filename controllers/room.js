@@ -3,7 +3,7 @@ const { Room } = require('../models');
 module.exports = {
   list: async (req, res) => {
     try {
-      const result = await Room.findAll();
+      const result = await Room.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } });
       res.status(200).send(result);
     } catch (error) {
       res.status(400).send(error);
@@ -15,18 +15,22 @@ module.exports = {
       const findType = await Room.findOne({ where: { type: req.body.type } });
       if (!findType) {
         const result = await Room.create({
-          name: req.body.name,
-          username: req.body.username,
-          password: req.body.password
+          type: req.body.type,
+          description: req.body.description,
+          // image: 'test',
+          image: req.files.image,
+          quantity: req.body.quantity,
+          price: req.body.price,
+          adminId: req.user.id
         });
         res.status(201).send(result);
       } else {
         res.status(200).json({
           errors: [
             {
-              value: req.body.username,
+              value: req.body.type,
               msg: 'Type already in use',
-              param: 'username',
+              param: 'type',
               location: 'body'
             }
           ]
