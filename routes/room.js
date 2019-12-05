@@ -2,13 +2,13 @@ const express = require('express');
 const { check } = require('express-validator');
 const verifyJWT = require('../middleware/jwt');
 const validate = require('../middleware/routes-validation');
-const controller = require('../controllers/admin');
+const controller = require('../controllers/room');
 
 const router = express.Router();
 
 // validation routes
 const validator = {
-  signUp: [
+  create: [
     check('name')
       .trim()
       .isLength({ min: 5, max: 50 })
@@ -21,7 +21,7 @@ const validator = {
       .isLength({ min: 5, max: 50 })
       .withMessage('must be at least 5-50 chars long')
   ],
-  signIn: [
+  update: [
     check('username')
       .trim()
       .isLength({ min: 5, max: 30 })
@@ -33,14 +33,12 @@ const validator = {
   delete: [check('id').exists()]
 };
 
-router.post('/signup', validate(validator.signUp), controller.signUp);
+router.post('/', validate(validator.create), verifyJWT('Admin'), controller.create);
 
-router.post('/signin', validate(validator.signIn), controller.signIn);
+router.put('/', validate(validator.update), verifyJWT('Admin'), controller.update);
 
-router.get('/', verifyJWT('Admin'), controller.getAll);
+router.get('/', controller.list);
 
 router.delete('/', validate(validator.delete), verifyJWT('Admin'), controller.delete);
-
-router.get('/me', verifyJWT('Admin'), controller.me);
 
 module.exports = router;
