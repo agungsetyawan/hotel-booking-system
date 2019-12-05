@@ -1,15 +1,29 @@
-const { createToken } = require('../libs/auth');
+const { createToken, parseToken } = require('../libs/auth');
 const { Admin } = require('../models');
 
 module.exports = {
   signUp: async (req, res) => {
     try {
-      const result = await Admin.create({
-        name: req.body.name,
-        username: req.body.username,
-        password: req.body.password
-      });
-      res.status(201).send(result);
+      const findUsername = await Admin.findOne({ where: { username: req.body.username } });
+      if (!findUsername) {
+        const result = await Admin.create({
+          name: req.body.name,
+          username: req.body.username,
+          password: req.body.password
+        });
+        res.status(201).send(result);
+      } else {
+        res.status(200).json({
+          errors: [
+            {
+              value: req.body.username,
+              msg: 'Username already in use',
+              param: 'username',
+              location: 'body'
+            }
+          ]
+        });
+      }
     } catch (error) {
       res.status(400).send(error);
     }
@@ -87,11 +101,12 @@ module.exports = {
     }
   },
 
-  findByUsername: async value => {
+  me: (req, res) => {
     try {
-      return await Admin.findOne({ where: { username: value } });
+      const token = parseToken(req.header('Authorization').replace('Bearer ', ''));
+      res.status(200).send(token.data);
     } catch (error) {
-      throw new Error(error);
+      res.status(400).send(error);
     }
   }
 };

@@ -6,43 +6,50 @@ const controller = require('../controllers/customer');
 
 const router = express.Router();
 
-router.post(
-  '/signup',
-  validate([
-    // name must be an string
-    check('name').isLength({ min: 5 }),
-    // email must be an email type
-    check('email').isEmail(),
-    // telp must be an numeric and 9-13 chars long
+// validation routes
+const validator = {
+  signUp: [
+    check('name')
+      .trim()
+      .isLength({ min: 5, max: 50 })
+      .withMessage('must be at least 5-50 chars long'),
+    check('email')
+      .isEmail()
+      .withMessage('email not valid'),
     check('telp')
       .optional()
       .isNumeric()
-      .isLength({ min: 9, max: 13 }),
-    // password must be at least 5 chars long
-    check('password').isLength({ min: 5 }),
-    // email must be an email type
+      .withMessage('must be numeric')
+      .isLength({ min: 9, max: 13 })
+      .withMessage('must be at least 9-13 digit'),
+    check('password')
+      .isLength({ min: 5, max: 50 })
+      .withMessage('must be at least 5-50 chars long'),
     check('gender')
       .optional()
-      .isIn(['male', 'female']),
-    // email must be an email type
+      .isIn(['male', 'female'])
+      .withMessage('value must be male or female'),
     check('dob')
       .optional()
-      .isString()
-  ]),
-  controller.signUp
-);
+      .toDate()
+      .isISO8601()
+  ],
+  signIn: [
+    check('email')
+      .isEmail()
+      .withMessage('email not valid'),
+    check('password')
+      .isLength({ min: 5, max: 50 })
+      .withMessage('must be at least 5-50 chars long')
+  ]
+};
 
-router.post(
-  '/signin',
-  validate([
-    // username must be an string
-    check('email').isEmail(),
-    // password must be at least 5 chars long
-    check('password').isLength({ min: 5 })
-  ]),
-  controller.signIn
-);
+router.post('/signup', validate(validator.signUp), controller.signUp);
 
-router.get('/', verifyJWT, controller.getAll);
+router.post('/signin', validate(validator.signIn), controller.signIn);
+
+router.get('/', verifyJWT('Admin'), controller.getAll);
+
+router.get('/me', verifyJWT('Customer'), controller.me);
 
 module.exports = router;

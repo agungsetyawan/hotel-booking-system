@@ -19,8 +19,7 @@ module.exports = {
         unique: true
       },
       telp: {
-        type: Sequelize.STRING(20),
-        unique: true
+        type: Sequelize.STRING(20)
       },
       password: {
         allowNull: false,
