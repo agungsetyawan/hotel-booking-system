@@ -10,25 +10,27 @@ const Sequelize = require('sequelize');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
+const adminRouter = require('./routes/admin');
+const customerRouter = require('./routes/customer');
 
 const app = express();
 
 // mysql
-// const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASS, {
-//   host: process.env.DB_HOST,
-//   dialect: 'mysql',
-//   pool: {
-//     max: 5,
-//     min: 0,
-//     idle: 10000
-//   }
-// });
+const sequelize = new Sequelize(process.env.DB_DATABASE, process.env.DB_USER, process.env.DB_PASS, {
+  host: process.env.DB_HOST,
+  dialect: 'mysql',
+  pool: {
+    max: 5,
+    min: 0,
+    idle: 10000
+  }
+});
 
 // sqlite
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: 'db.sqlite'
-});
+// const sequelize = new Sequelize({
+//   dialect: 'sqlite',
+//   storage: 'db.sqlite'
+// });
 
 // test connection to database
 sequelize
@@ -52,6 +54,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/admin', adminRouter);
+app.use('/customer', customerRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

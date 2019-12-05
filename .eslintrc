@@ -6,8 +6,9 @@
     "no-unused-vars": "warn",
     "no-console": "off",
     "func-names": "off",
-    "no-process-exit": "off",
-    "object-shorthand": "off",
-    "class-methods-use-this": "off"
+    "strict": "off",
+    "consistent-return": "off",
+    "no-param-reassign": "off",
+    "object-shorthand": "off"
   }
 }
