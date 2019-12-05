@@ -16,6 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       image: {
         allowNull: false,
         type: DataTypes.STRING,
+        defaultValue: 'default.jpg',
         get() {
           const image = this.getDataValue('image');
           return `/uploads/img/room/${image}`;

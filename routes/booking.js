@@ -9,42 +9,48 @@ const router = express.Router();
 // validation routes
 const validator = {
   create: [
-    check('type')
-      .trim()
-      .isLength({ min: 5, max: 50 })
-      .withMessage('must be at least 5-50 chars long'),
-    check('description')
-      .trim()
-      .isLength({ min: 5 })
-      .withMessage('must be at least 5 chars long'),
-    check('quantity')
-      .isInt({ gt: 0 })
-      .withMessage('must be an integer greater than equals 1'),
-    check('price')
-      .isInt({ gt: -1 })
-      .withMessage('must be an integer greater than equals 0')
+    check('startDate')
+      .toDate()
+      .isISO8601(),
+    check('endDate')
+      .toDate()
+      .isISO8601(),
+    check('status')
+      .isIn(['booking', 'cancel'])
+      .withMessage('value must be booking or cancel'),
+    check('numberOfRoom').isInt({ gt: 0 }),
+    check('roomId').isInt({ gt: 0 }),
+    check('customerId').isInt({ gt: 0 })
   ],
   update: [
-    check('username')
-      .trim()
-      .isLength({ min: 5, max: 30 })
-      .withMessage('must be at least 5-30 chars long'),
-    check('password')
-      .isLength({ min: 5, max: 50 })
-      .withMessage('must be at least 5-50 chars long')
+    check('id').isInt({ gt: 0 }),
+    check('startDate')
+      .toDate()
+      .isISO8601(),
+    check('endDate')
+      .toDate()
+      .isISO8601(),
+    check('status')
+      .isIn(['booking', 'cancel'])
+      .withMessage('value must be booking or cancel'),
+    check('numberOfRoom').isInt({ gt: 0 }),
+    check('roomId').isInt({ gt: 0 }),
+    check('customerId').isInt({ gt: 0 })
   ],
   delete: [check('id').isInt()],
   cancel: [check('id').isInt()]
 };
 
-router.post('/', verifyJWT('Customer'), controller.create);
+router.get('/', verifyJWT('Admin'), controller.list);
+
+router.post('/', validate(validator.create), verifyJWT('Customer'), controller.create);
+
+router.put('/:id', validate(validator.update), verifyJWT(['Customer', 'Admin']), controller.update);
+
+router.delete('/:id', validate(validator.delete), verifyJWT('Admin'), controller.delete);
 
 router.post('/cancel/:id', validate(validator.cancel), verifyJWT('Customer'), controller.cancel);
 
-router.put('/:id', verifyJWT(['Customer', 'Admin']), controller.update);
-
-router.get('/', verifyJWT(['Customer', 'Admin']), controller.list);
-
-router.delete('/:id', verifyJWT('Admin'), controller.delete);
+router.get('/me', verifyJWT('Customer'), controller.me);
 
 module.exports = router;

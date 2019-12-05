@@ -15,13 +15,12 @@ module.exports = {
       const findType = await Booking.findOne({ where: { type: req.body.type } });
       if (!findType) {
         const result = await Booking.create({
-          type: req.body.type,
-          description: req.body.description,
-          // image: 'test',
-          image: req.files.image,
-          quantity: req.body.quantity,
-          price: req.body.price,
-          adminId: req.user.id
+          startDate: req.body.startDate,
+          endDate: req.body.endDate,
+          status: req.body.status,
+          numberOfRoom: req.body.numberOfRoom, // for multiple rooms
+          roomId: req.body.roomId,
+          customerId: req.user.id
         });
         res.status(201).send(result);
       } else {
@@ -98,6 +97,15 @@ module.exports = {
           ]
         });
       }
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  },
+
+  me: async (req, res) => {
+    try {
+      const result = await Booking.find({ where: { customerId: req.user.id } });
+      res.status(200).send(result);
     } catch (error) {
       res.status(400).send(error);
     }
