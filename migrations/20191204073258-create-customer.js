@@ -24,7 +24,7 @@ module.exports = {
       },
       password: {
         allowNull: false,
-        type: Sequelize.STRING(50)
+        type: Sequelize.STRING
       },
       gender: {
         type: Sequelize.ENUM,
