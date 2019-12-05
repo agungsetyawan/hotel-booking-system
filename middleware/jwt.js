@@ -1,12 +1,11 @@
 const { verifyToken } = require('../libs/auth');
 
-module.exports = (req, res, next) => {
-  verifyToken(req.headers.authorization)
-    .then(decodedToken => {
-      req.user = decodedToken.data;
-      next();
-    })
-    .catch(err => {
-      res.status(401).json({ message: 'Invalid auth token provided.' });
-    });
+module.exports = async (req, res, next) => {
+  try {
+    const decodedToken = await verifyToken(req.headers.authorization);
+    req.user = decodedToken.data;
+    next();
+  } catch (error) {
+    res.status(401).json({ message: 'Invalid auth token provided.' });
+  }
 };

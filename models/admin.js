@@ -8,24 +8,25 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(50)
       },
       username: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(30),
+        unique: true
       },
       password: {
         allowNull: false,
-        type: DataTypes.STRING
+        type: DataTypes.STRING(50)
       }
     },
     {
       freezeTableName: true,
       hooks: {
-        beforeCreate: user => {
+        beforeCreate: admin => {
           const salt = bcrypt.genSaltSync(5);
           // eslint-disable-next-line no-param-reassign
-          user.password = bcrypt.hashSync(user.password, salt);
+          admin.password = bcrypt.hashSync(admin.password, salt);
         }
       }
     }

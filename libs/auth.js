@@ -34,17 +34,9 @@ module.exports = {
       {}
     );
 
-    const token = jwt.sign(
-      {
-        data: details.sessionData
-      },
-      process.env.JWT_SECRET || '5ecr3t',
-      {
-        expiresIn: details.maxAge,
-        algorithm: 'HS256'
-      }
-    );
-
-    return token;
+    return jwt.sign({ data: details.sessionData }, process.env.JWT_SECRET || '5ecr3t', {
+      expiresIn: details.maxAge,
+      algorithm: 'HS256'
+    });
   }
 };

@@ -1,15 +1,14 @@
 {
   "development": {
-    "dialect": "sqlite",
-    "storage": "db.sqlite"
+    "username": "root",
+    "password": "root",
+    "database": "hotel_test",
+    "host": "127.0.0.1",
+    "dialect": "mysql"
   },
   "test": {
-    "username": "root",
-    "password": null,
-    "database": "database_test",
-    "host": "127.0.0.1",
-    "dialect": "mysql",
-    "operatorsAliases": false
+    "dialect": "sqlite",
+    "storage": "db.sqlite"
   },
   "production": {
     "username": "root",
