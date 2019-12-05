@@ -9,10 +9,10 @@ const logger = require('morgan');
 const Sequelize = require('sequelize');
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
 const adminRouter = require('./routes/admin');
 const customerRouter = require('./routes/customer');
 const roomRouter = require('./routes/room');
+const bookingRouter = require('./routes/booking');
 
 const app = express();
 
@@ -54,10 +54,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/admin', adminRouter);
 app.use('/customer', customerRouter);
 app.use('/room', roomRouter);
+app.use('/booking', bookingRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

@@ -29,12 +29,12 @@ module.exports = (sequelize, DataTypes) => {
     });
   };
 
-  Booking.prototype.cancel = function() {
-    // Booking.update({ status: 'cancel' }, { where: { id: id } });
+  Booking.prototype.cancel = async function() {
     if (this.status !== 'cancel') {
-      this.status = 'cancel';
-      this.updatedAt = DataTypes.NOW;
+      await Booking.update({ status: 'cancel' }, { where: { id: this.id } });
+      return true;
     }
+    return false;
   };
 
   return Booking;

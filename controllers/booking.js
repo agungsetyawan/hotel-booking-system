@@ -1,9 +1,9 @@
-const { Room } = require('../models');
+const { Booking } = require('../models');
 
 module.exports = {
   list: async (req, res) => {
     try {
-      const result = await Room.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } });
+      const result = await Booking.findAll({ attributes: { exclude: ['createdAt', 'updatedAt'] } });
       res.status(200).send(result);
     } catch (error) {
       res.status(400).send(error);
@@ -12,13 +12,13 @@ module.exports = {
 
   create: async (req, res) => {
     try {
-      const findType = await Room.findOne({ where: { type: req.body.type } });
+      const findType = await Booking.findOne({ where: { type: req.body.type } });
       if (!findType) {
-        const result = await Room.create({
+        const result = await Booking.create({
           type: req.body.type,
           description: req.body.description,
-          image: 'test',
-          // image: req.files.image,
+          // image: 'test',
+          image: req.files.image,
           quantity: req.body.quantity,
           price: req.body.price,
           adminId: req.user.id
@@ -43,7 +43,7 @@ module.exports = {
 
   delete: async (req, res) => {
     try {
-      const result = await Room.destroy({ where: { id: req.params.id } });
+      const result = await Booking.destroy({ where: { id: req.params.id } });
       if (result === 0) {
         res.status(200).json({
           errors: [
@@ -58,7 +58,7 @@ module.exports = {
       } else {
         res.status(200).json({
           success: true,
-          msg: `Room ${req.params.id} deleted`
+          msg: `Booking ${req.params.id} deleted`
         });
       }
       res.status(200).send(result);
@@ -69,27 +69,29 @@ module.exports = {
 
   update: async (req, res) => {
     try {
-      const findId = await Room.findOne({ where: { id: req.params.id } });
-      if (!findId) {
-        const result = await Room.update(
-          {
-            type: req.body.type,
-            description: req.body.description,
-            image: 'test',
-            // image: req.files.image,
-            quantity: req.body.quantity,
-            price: req.body.price,
-            adminId: req.user.id
-          },
-          { where: { id: req.params.id } }
-        );
-        res.status(201).send(result);
+      res.status(200).send('test');
+    } catch (error) {
+      res.status(400).send(error);
+    }
+  },
+
+  cancel: async (req, res) => {
+    try {
+      const result = await Booking.findOne({ where: { id: req.params.id } });
+      if (result) {
+        if (await result.cancel()) {
+          res
+            .status(200)
+            .send({ success: true, msg: `booking id ${req.params.id} success to cancel` });
+        } else {
+          res.status(200).send({ success: false, msg: `booking id ${req.params.id} has canceled` });
+        }
       } else {
         res.status(200).json({
           errors: [
             {
               value: req.params.id,
-              msg: 'id not defined',
+              msg: 'id not found',
               param: 'id',
               location: 'params'
             }

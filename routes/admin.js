@@ -30,7 +30,7 @@ const validator = {
       .isLength({ min: 5, max: 50 })
       .withMessage('must be at least 5-50 chars long')
   ],
-  delete: [check('id').exists()]
+  delete: [check('id').isInt()]
 };
 
 router.post('/signup', validate(validator.signUp), controller.signUp);
@@ -39,7 +39,7 @@ router.post('/signin', validate(validator.signIn), controller.signIn);
 
 router.get('/', verifyJWT('Admin'), controller.getAll);
 
-router.delete('/', validate(validator.delete), verifyJWT('Admin'), controller.delete);
+router.delete('/:id', validate(validator.delete), verifyJWT('Admin'), controller.delete);
 
 router.get('/me', verifyJWT('Admin'), controller.me);
 

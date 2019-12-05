@@ -1,10 +1,8 @@
 const express = require('express');
 const { check } = require('express-validator');
-const multer = require('multer');
 const verifyJWT = require('../middleware/jwt');
 const validate = require('../middleware/routes-validation');
-const controller = require('../controllers/room');
-const storage = require('../libs/storage-uploads');
+const controller = require('../controllers/booking');
 
 const router = express.Router();
 
@@ -35,17 +33,18 @@ const validator = {
       .isLength({ min: 5, max: 50 })
       .withMessage('must be at least 5-50 chars long')
   ],
-  delete: [check('id').isInt()]
+  delete: [check('id').isInt()],
+  cancel: [check('id').isInt()]
 };
 
-const uploadImage = multer(storage('img/room/')).single('image');
+router.post('/', verifyJWT('Customer'), controller.create);
 
-router.post('/', validate(validator.create), verifyJWT('Admin'), uploadImage, controller.create);
+router.post('/cancel/:id', validate(validator.cancel), verifyJWT('Customer'), controller.cancel);
 
-router.put('/:id', validate(validator.update), verifyJWT('Admin'), controller.update);
+router.put('/:id', verifyJWT(['Customer', 'Admin']), controller.update);
 
-router.get('/', controller.list);
+router.get('/', verifyJWT(['Customer', 'Admin']), controller.list);
 
-router.delete('/:id', validate(validator.delete), verifyJWT('Admin'), controller.delete);
+router.delete('/:id', verifyJWT('Admin'), controller.delete);
 
 module.exports = router;

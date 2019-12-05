@@ -77,22 +77,22 @@ module.exports = {
 
   delete: async (req, res) => {
     try {
-      const result = await Admin.destroy({ where: { id: req.body.id } });
+      const result = await Admin.destroy({ where: { id: req.params.id } });
       if (result === 0) {
         res.status(200).json({
           errors: [
             {
-              value: req.body.id,
+              value: req.params.id,
               msg: 'id not found',
               param: 'id',
-              location: 'body'
+              location: 'params'
             }
           ]
         });
       } else {
         res.status(200).json({
           success: true,
-          msg: `admin ${req.body.id} deleted`
+          msg: `admin ${req.params.id} deleted`
         });
       }
       res.status(200).send(result);
