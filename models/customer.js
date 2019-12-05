@@ -49,6 +49,10 @@ module.exports = (sequelize, DataTypes) => {
   );
   Customer.associate = function(models) {
     // associations can be defined here
+    Customer.hasMany(models.Booking, {
+      foreignKey: 'customerId',
+      as: 'bookings'
+    });
   };
 
   Customer.prototype.validPassword = function(password) {
