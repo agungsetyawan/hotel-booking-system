@@ -1,6 +1,23 @@
 const _ = require('lodash');
 const { Booking } = require('../models');
+const db = require('../models');
 const Room = require('../controllers/room');
+
+async function isAllowUpdate(id) {
+  try {
+    const query = `SELECT*FROM Bookings WHERE Bookings.startDate> CURDATE() AND Bookings.STATUS='booking' AND id=:id`;
+    const result = await db.sequelize.query(query, {
+      replacements: { id: id },
+      type: db.sequelize.QueryTypes.SELECT
+    });
+    if (result.length) {
+      return true;
+    }
+    return false;
+  } catch (error) {
+    return false;
+  }
+}
 
 module.exports = {
   list: async (req, res) => {
@@ -71,6 +88,11 @@ module.exports = {
 
   update: async (req, res) => {
     try {
+      if (!(await isAllowUpdate(req.params.id))) {
+        return res
+          .status(200)
+          .json({ success: false, msg: `booking ${req.params.id} not allow to update` });
+      }
       const findAvailable = await Room.availableQuery(
         req.body.startDate,
         req.body.endDate,

@@ -43,7 +43,7 @@ router.get('/', verifyJWT('Admin'), controller.list);
 
 router.post('/', validate(validator.create), verifyJWT('Customer'), controller.create);
 
-router.put('/:id', validate(validator.update), verifyJWT(['Customer', 'Admin']), controller.update);
+router.put('/:id', validate(validator.update), verifyJWT('Customer'), controller.update);
 
 router.delete('/:id', validate(validator.delete), verifyJWT('Admin'), controller.delete);
 
