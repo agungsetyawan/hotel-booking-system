@@ -1,9 +1,6 @@
 const _ = require('lodash');
 const { Booking } = require('../models');
-const db = require('../models');
 const Room = require('../controllers/room');
-
-const Op = db.Op;
 
 module.exports = {
   list: async (req, res) => {
