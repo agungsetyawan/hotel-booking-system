@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const { Booking } = require('../models');
 const Room = require('../controllers/room');
 
@@ -18,8 +19,13 @@ module.exports = {
         req.body.endDate,
         req.body.numberOfRoom
       );
-      console.log(findAvailable);
-      if (findAvailable) {
+      const isAvailable = _.some(findAvailable, function(item) {
+        return (
+          item.id === parseInt(req.body.roomId, 10) &&
+          item.roomsAvailable >= parseInt(req.body.numberOfRoom, 10)
+        );
+      });
+      if (isAvailable) {
         const result = await Booking.create({
           startDate: req.body.startDate,
           endDate: req.body.endDate,
