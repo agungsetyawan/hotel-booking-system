@@ -19,8 +19,7 @@ const validator = {
       .isIn(['booking', 'cancel'])
       .withMessage('value must be booking or cancel'),
     check('numberOfRoom').isInt({ gt: 0 }),
-    check('roomId').isInt({ gt: 0 }),
-    check('customerId').isInt({ gt: 0 })
+    check('roomId').isInt({ gt: 0 })
   ],
   update: [
     check('id').isInt({ gt: 0 }),
@@ -34,8 +33,7 @@ const validator = {
       .isIn(['booking', 'cancel'])
       .withMessage('value must be booking or cancel'),
     check('numberOfRoom').isInt({ gt: 0 }),
-    check('roomId').isInt({ gt: 0 }),
-    check('customerId').isInt({ gt: 0 })
+    check('roomId').isInt({ gt: 0 })
   ],
   delete: [check('id').isInt()],
   cancel: [check('id').isInt()]
