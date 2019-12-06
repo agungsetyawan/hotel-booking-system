@@ -1,5 +1,7 @@
 'use strict';
 
+const moment = require('moment');
+
 module.exports = (sequelize, DataTypes) => {
   const Booking = sequelize.define(
     'Booking',
@@ -35,7 +37,7 @@ module.exports = (sequelize, DataTypes) => {
   };
 
   Booking.prototype.cancel = async function() {
-    if (this.status !== 'cancel') {
+    if (this.status !== 'cancel' && moment().isBefore(this.startDate)) {
       await Booking.update({ status: 'cancel' }, { where: { id: this.id } });
       return true;
     }
