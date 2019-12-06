@@ -1,6 +1,9 @@
 const _ = require('lodash');
 const { Booking } = require('../models');
+const db = require('../models');
 const Room = require('../controllers/room');
+
+const Op = db.Op;
 
 module.exports = {
   list: async (req, res) => {
@@ -71,7 +74,37 @@ module.exports = {
 
   update: async (req, res) => {
     try {
-      res.status(200).send('test');
+      const findAvailable = await Room.availableQuery(
+        req.body.startDate,
+        req.body.endDate,
+        req.body.numberOfRoom
+      );
+      const isAvailable = _.some(findAvailable, function(item) {
+        return (
+          item.id === parseInt(req.body.roomId, 10) &&
+          item.roomsAvailable >= parseInt(req.body.numberOfRoom, 10)
+        );
+      });
+      if (isAvailable) {
+        const result = await Booking.update(
+          {
+            startDate: req.body.startDate,
+            endDate: req.body.endDate,
+            status: req.body.status,
+            numberOfRoom: req.body.numberOfRoom, // for multiple rooms
+            roomId: req.body.roomId,
+            customerId: req.user.id
+          },
+          { where: { id: req.params.id } }
+        );
+        if (result[0] === 0) {
+          res.status(200).json({ success: false, msg: `booking ${req.params.id} failed updated` });
+        } else {
+          res.status(200).json({ success: true, msg: `booking ${req.params.id} updated` });
+        }
+      } else {
+        res.status(200).json({ success: false, msg: `room not available` });
+      }
     } catch (error) {
       res.status(400).send(error);
     }
